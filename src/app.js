@@ -7,43 +7,53 @@ console.log('App is running');
 const app = {
     title: 'Indecision App',
     subTitle: 'Some subtitle',
-    options: ['One', 'Two']
+    options: []
 };
 
-const template = (
-    <div>
-        <h1>{app.title}</h1>
-        {app.subTitle && <p>{app.subTitle}</p>}
-        <p>{app.options.length > 0 ? 'Here are your options' : 'No options'}</p>
-        <ol>
-            <li>Item One</li>
-            <li>Item Two</li>
-        </ol>  
-    </div>
-);
+const onFormSubmit = (e) => {
+    e.preventDefault();
 
-const user = {
-    name: 'Velizar',
-    age: 26,
-    location: 'Leatherhead'
-};
+    const option = e.target.elements.option.value;
 
-const getLocation = (location) => {
-    if(location) {
-        return <p> Location: {location} </p>;
+    if(option) {
+        app.options.push(option);
+        e.target.elements.option.value = '';
     }
+    renderApp();
 };
 
-const templateTwo = (
-    <div>
-        <h1>{user.name ? user.name : 'Anonymous'}</h1>
-        {user.age >= 18 && <p>Age: {user.age}</p>}
-        {getLocation(user.location)}
-    </div>
-);
+const removeOptions = () => {
+    app.options = [];
+    renderApp();
+};
 
-// Same as above: var template = React.createElement("h1", { id: "some-id" }, "This is JSX from app.js");
+const numbers = [55, 101, 1000];
 
-const appRoot = document.getElementById('app');
+const renderApp = () => {
+    const template = (
+        <div>
+            <h1>{app.title}</h1>
+            {app.subTitle && <p>{app.subTitle}</p>}
+            <p>{app.options.length > 0 ? 'Here are your options' : 'No options'}</p>
+            <p>{app.options.length}</p>
+            <button onClick={removeOptions}>Remove All</button>
+            <ol>
+            {
+                app.options.map((option, index) => {
+                    return <li key={index}>{option}</li>
+                })
+            }
+            </ol>
+            <form onSubmit={onFormSubmit}>
+                <input type="text" name="option"/>
+                <button>Add Option</button>
+            </form>  
+        </div>
+    );
+    
+    const appRoot = document.getElementById('app');
 
-ReactDOM.render(template, appRoot);
+    ReactDOM.render(template, appRoot);
+};
+
+renderApp();
