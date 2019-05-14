@@ -2,6 +2,8 @@ class FortuneApp extends React.Component {
     constructor(props) {
         super(props);
         this.onRemoveAll = this.onRemoveAll.bind(this);
+        this.onMakeDecision = this.onMakeDecision.bind(this);
+        this.addOption = this.addOption.bind(this);
         this.state = {
             title: 'Fortune',
             subtitle: 'Click and see what\'s your fortune',
@@ -17,15 +19,34 @@ class FortuneApp extends React.Component {
         })
     };
 
+    onMakeDecision() {
+        const randNum = Math.floor(Math.random() * this.state.options.length);
+        const selectedOption = this.state.options[randNum];
+        alert(selectedOption);
+    };
+
+    addOption(option) {
+       this.setState((prevState) => {
+           return {
+                options: prevState.options.concat(option)
+            }
+       });
+    };
+
     render() {
         return (
             <div>
-                <Header title={this.state.title} subtitle={this.state.subtitle} />
-                <Action hasOptions={this.state.options.length > 0} options={this.state.options} />
+                <Header 
+                    title={this.state.title} 
+                    subtitle={this.state.subtitle} />
+                <Action 
+                    hasOptions={this.state.options.length > 0} 
+                    onMakeDecision={this.onMakeDecision} />
                 <Options 
                     options={this.state.options} 
                     onRemoveAll={this.onRemoveAll}/>
-                <AddOption />   
+                <AddOption 
+                    addOption={this.addOption}/>
             </div>
         );
     };
@@ -43,20 +64,10 @@ class Header extends React.Component {
 }
 
 class Action extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onMakeDecision = this.onMakeDecision.bind(this);
-    }
-    onMakeDecision() {
-        const randNum = Math.floor(Math.random() * this.props.options.length);
-        const selectedOption = this.props.options[randNum];
-        alert(selectedOption);
-    };
-
     render() {
         return (
             <div>
-                <button onClick={this.onMakeDecision}>What should I do?</button>
+                <button onClick={this.props.onMakeDecision}>What should I do?</button>
             </div>
         );
     };
@@ -88,13 +99,18 @@ class Option extends React.Component {
 }
 
 class AddOption extends React.Component {
+    constructor(props) {
+        super(props);
+        this.onAddOption = this.onAddOption.bind(this);
+    }
     onAddOption(e) {
         e.preventDefault();
 
         const option = e.target.elements.option.value.trim();
 
         if(option) {
-            alert(option);
+            this.props.addOption(option);
+            e.target.elements.option.value = '';
         }
         
     };
