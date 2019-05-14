@@ -7,18 +7,13 @@ class FortuneApp extends React.Component {
         this.onMakeDecision = this.onMakeDecision.bind(this);
         this.addOption = this.addOption.bind(this);
         this.state = {
-            title: 'Fortune',
-            subtitle: 'Click and see what\'s your fortune',
-            options: []
+            subtitle: 'See into your future',
+            options: props.options
         };
     };
 
     onRemoveAll() {
-        this.setState(() => {
-            return {
-                options: []
-            }
-        })
+        this.setState(() => ({ options: []}));
     };
 
     onMakeDecision() {
@@ -33,11 +28,7 @@ class FortuneApp extends React.Component {
         } else if (this.state.options.indexOf(option) > -1) {
             return 'This item alredy exists';
         }
-       this.setState((prevState) => {
-           return {
-                options: prevState.options.concat(option)
-            }
-       });
+       this.setState((prevState) => ({ options: prevState.options.concat(option) }));
     };
 
     render() {
@@ -59,14 +50,22 @@ class FortuneApp extends React.Component {
     };
 }
 
+FortuneApp.defaultProps = {
+    options: []
+};
+
 const Header = (props) => {
         return (
             <div>
                 <h1>{props.title}</h1>
-                <h2>{props.subtitle}</h2>
+                {props.subtitle && <h2>{props.subtitle}</h2>}
             </div>
         );
-}
+};
+
+Header.defaultProps = {
+    title: 'Fortune App'
+};
 
 const Action = (props) => {
         return (
@@ -74,7 +73,7 @@ const Action = (props) => {
                 <button onClick={props.onMakeDecision}>What should I do?</button>
             </div>
         );
-}
+};
 
 const Options = (props) => {
         return (
@@ -89,13 +88,13 @@ const Options = (props) => {
                 
             </div>
         );
-}
+};
 
 const Option = (props) => {
         return (
             <div>Option: {props.option}</div>
         );
-}
+};
 
 class AddOption extends React.Component {
     constructor(props) {
@@ -111,12 +110,10 @@ class AddOption extends React.Component {
         e.preventDefault();
 
         const option = e.target.elements.option.value.trim();
+        e.target.elements.option.value = '';
         const error = this.props.addOption(option);
         
-        this.setState(() => {
-            return { error }
-        });
-
+        this.setState(() => ({ error }));
 
     };
 
@@ -133,4 +130,4 @@ class AddOption extends React.Component {
     };
 }
 
-ReactDOM.render(<FortuneApp />, document.getElementById('app'));
+ReactDOM.render(<FortuneApp options={['The Valuty Towers', 'Cubin One']}/>, document.getElementById('app'));

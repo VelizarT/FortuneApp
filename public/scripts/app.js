@@ -22,9 +22,8 @@ var FortuneApp = function (_React$Component) {
         _this.onMakeDecision = _this.onMakeDecision.bind(_this);
         _this.addOption = _this.addOption.bind(_this);
         _this.state = {
-            title: 'Fortune',
-            subtitle: 'Click and see what\'s your fortune',
-            options: []
+            subtitle: 'See into your future',
+            options: props.options
         };
         return _this;
     }
@@ -33,9 +32,7 @@ var FortuneApp = function (_React$Component) {
         key: 'onRemoveAll',
         value: function onRemoveAll() {
             this.setState(function () {
-                return {
-                    options: []
-                };
+                return { options: [] };
             });
         }
     }, {
@@ -54,9 +51,7 @@ var FortuneApp = function (_React$Component) {
                 return 'This item alredy exists';
             }
             this.setState(function (prevState) {
-                return {
-                    options: prevState.options.concat(option)
-                };
+                return { options: prevState.options.concat(option) };
             });
         }
     }, {
@@ -83,6 +78,10 @@ var FortuneApp = function (_React$Component) {
     return FortuneApp;
 }(React.Component);
 
+FortuneApp.defaultProps = {
+    options: []
+};
+
 var Header = function Header(props) {
     return React.createElement(
         'div',
@@ -92,12 +91,16 @@ var Header = function Header(props) {
             null,
             props.title
         ),
-        React.createElement(
+        props.subtitle && React.createElement(
             'h2',
             null,
             props.subtitle
         )
     );
+};
+
+Header.defaultProps = {
+    title: 'Fortune App'
 };
 
 var Action = function Action(props) {
@@ -163,6 +166,7 @@ var AddOption = function (_React$Component2) {
             e.preventDefault();
 
             var option = e.target.elements.option.value.trim();
+            e.target.elements.option.value = '';
             var error = this.props.addOption(option);
 
             this.setState(function () {
@@ -197,4 +201,4 @@ var AddOption = function (_React$Component2) {
     return AddOption;
 }(React.Component);
 
-ReactDOM.render(React.createElement(FortuneApp, null), document.getElementById('app'));
+ReactDOM.render(React.createElement(FortuneApp, { options: ['The Valuty Towers', 'Cubin One'] }), document.getElementById('app'));
