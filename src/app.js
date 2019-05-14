@@ -1,3 +1,5 @@
+//classbased vs stateless functional components
+
 class FortuneApp extends React.Component {
     constructor(props) {
         super(props);
@@ -57,50 +59,42 @@ class FortuneApp extends React.Component {
     };
 }
 
-class Header extends React.Component {
-    render() {
+const Header = (props) => {
         return (
             <div>
-                <h1>{this.props.title}</h1>
-                <h2>{this.props.subtitle}</h2>
+                <h1>{props.title}</h1>
+                <h2>{props.subtitle}</h2>
             </div>
         );
-    };
 }
 
-class Action extends React.Component {
-    render() {
+const Action = (props) => {
         return (
             <div>
-                <button onClick={this.props.onMakeDecision}>What should I do?</button>
+                <button onClick={props.onMakeDecision}>What should I do?</button>
             </div>
         );
-    };
 }
 
-class Options extends React.Component {
-    render() {
+const Options = (props) => {
         return (
             <div>
                 <p>Options Component here</p>
-                <button onClick={this.props.onRemoveAll}>Remove All</button>
+                <button onClick={props.onRemoveAll}>Remove All</button>
                 {
-                    this.props.options.map((option) => {
+                    props.options.map((option) => {
                         return <Option key={option} option={option}/>
                     })
                 }
                 
             </div>
         );
-    };
 }
 
-class Option extends React.Component {
-    render() {
+const Option = (props) => {
         return (
-            <div>Option: {this.props.option}</div>
+            <div>Option: {props.option}</div>
         );
-    }
 }
 
 class AddOption extends React.Component {
