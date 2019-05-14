@@ -7,7 +7,7 @@ class FortuneApp extends React.Component {
         this.state = {
             title: 'Fortune',
             subtitle: 'Click and see what\'s your fortune',
-            options: ['Thing One', 'Thing Two', 'Thing Three', 'Thing four']
+            options: []
         };
     };
 
@@ -26,6 +26,11 @@ class FortuneApp extends React.Component {
     };
 
     addOption(option) {
+        if(!option) {
+            return 'Enter valid value to add item';
+        } else if (this.state.options.indexOf(option) > -1) {
+            return 'This item alredy exists';
+        }
        this.setState((prevState) => {
            return {
                 options: prevState.options.concat(option)
@@ -102,22 +107,29 @@ class AddOption extends React.Component {
     constructor(props) {
         super(props);
         this.onAddOption = this.onAddOption.bind(this);
-    }
+        this.state = {
+            error: undefined
+        }
+    };
+
     onAddOption(e) {
+
         e.preventDefault();
 
         const option = e.target.elements.option.value.trim();
-
-        if(option) {
-            this.props.addOption(option);
-            e.target.elements.option.value = '';
-        }
+        const error = this.props.addOption(option);
         
+        this.setState(() => {
+            return { error }
+        });
+
+
     };
 
     render() {
         return (
             <div>
+                {this.state.error && <p>{this.state.error}</p>}
                 <form onSubmit={this.onAddOption}>
                     <input type="text" name="option"/>
                     <button>Add Option</button>

@@ -22,7 +22,7 @@ var FortuneApp = function (_React$Component) {
         _this.state = {
             title: 'Fortune',
             subtitle: 'Click and see what\'s your fortune',
-            options: ['Thing One', 'Thing Two', 'Thing Three', 'Thing four']
+            options: []
         };
         return _this;
     }
@@ -46,6 +46,11 @@ var FortuneApp = function (_React$Component) {
     }, {
         key: 'addOption',
         value: function addOption(option) {
+            if (!option) {
+                return 'Enter valid value to add item';
+            } else if (this.state.options.indexOf(option) > -1) {
+                return 'This item alredy exists';
+            }
             this.setState(function (prevState) {
                 return {
                     options: prevState.options.concat(option)
@@ -203,20 +208,24 @@ var AddOption = function (_React$Component6) {
         var _this6 = _possibleConstructorReturn(this, (AddOption.__proto__ || Object.getPrototypeOf(AddOption)).call(this, props));
 
         _this6.onAddOption = _this6.onAddOption.bind(_this6);
+        _this6.state = {
+            error: undefined
+        };
         return _this6;
     }
 
     _createClass(AddOption, [{
         key: 'onAddOption',
         value: function onAddOption(e) {
+
             e.preventDefault();
 
             var option = e.target.elements.option.value.trim();
+            var error = this.props.addOption(option);
 
-            if (option) {
-                this.props.addOption(option);
-                e.target.elements.option.value = '';
-            }
+            this.setState(function () {
+                return { error: error };
+            });
         }
     }, {
         key: 'render',
@@ -224,6 +233,11 @@ var AddOption = function (_React$Component6) {
             return React.createElement(
                 'div',
                 null,
+                this.state.error && React.createElement(
+                    'p',
+                    null,
+                    this.state.error
+                ),
                 React.createElement(
                     'form',
                     { onSubmit: this.onAddOption },
