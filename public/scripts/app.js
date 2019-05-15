@@ -21,6 +21,7 @@ var FortuneApp = function (_React$Component) {
         _this.onRemoveAll = _this.onRemoveAll.bind(_this);
         _this.onMakeDecision = _this.onMakeDecision.bind(_this);
         _this.addOption = _this.addOption.bind(_this);
+        _this.onRemoveOption = _this.onRemoveOption.bind(_this);
         _this.state = {
             subtitle: 'See into your future',
             options: props.options
@@ -33,6 +34,18 @@ var FortuneApp = function (_React$Component) {
         value: function onRemoveAll() {
             this.setState(function () {
                 return { options: [] };
+            });
+        }
+    }, {
+        key: 'onRemoveOption',
+        value: function onRemoveOption(optionToDelete) {
+            this.setState(function (prevState) {
+                // prevState.options.splice(prevState.options.indexOf(option), 1);
+                return {
+                    options: prevState.options.filter(function (option) {
+                        return option !== optionToDelete;
+                    })
+                };
             });
         }
     }, {
@@ -68,7 +81,8 @@ var FortuneApp = function (_React$Component) {
                     onMakeDecision: this.onMakeDecision }),
                 React.createElement(Options, {
                     options: this.state.options,
-                    onRemoveAll: this.onRemoveAll }),
+                    onRemoveAll: this.onRemoveAll,
+                    onRemoveOption: this.onRemoveOption }),
                 React.createElement(AddOption, {
                     addOption: this.addOption })
             );
@@ -130,17 +144,30 @@ var Options = function Options(props) {
             'Remove All'
         ),
         props.options.map(function (option) {
-            return React.createElement(Option, { key: option, option: option });
+            return React.createElement(Option, {
+                key: option,
+                option: option,
+                onRemoveOption: props.onRemoveOption });
         })
     );
 };
 
 var Option = function Option(props) {
+    // this.onRemoveOption(e) {
+    //     const option = e.target.prevSibling()
+    // }
+
     return React.createElement(
         'div',
         null,
-        'Option: ',
-        props.option
+        props.option,
+        React.createElement(
+            'button',
+            { onClick: function onClick(e) {
+                    props.onRemoveOption(props.option);
+                } },
+            'Remove'
+        )
     );
 };
 
@@ -201,4 +228,4 @@ var AddOption = function (_React$Component2) {
     return AddOption;
 }(React.Component);
 
-ReactDOM.render(React.createElement(FortuneApp, { options: ['The Valuty Towers', 'Cubin One'] }), document.getElementById('app'));
+ReactDOM.render(React.createElement(FortuneApp, null), document.getElementById('app'));

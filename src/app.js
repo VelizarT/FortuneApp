@@ -6,21 +6,31 @@ class FortuneApp extends React.Component {
         this.onRemoveAll = this.onRemoveAll.bind(this);
         this.onMakeDecision = this.onMakeDecision.bind(this);
         this.addOption = this.addOption.bind(this);
+        this.onRemoveOption = this.onRemoveOption.bind(this);
         this.state = {
             subtitle: 'See into your future',
             options: props.options
         };
-    };
+    }
 
     onRemoveAll() {
         this.setState(() => ({ options: []}));
-    };
+    }
+
+    onRemoveOption(optionToDelete) {
+        this.setState((prevState) => {
+            // prevState.options.splice(prevState.options.indexOf(option), 1);
+            return {
+                options: prevState.options.filter((option) => option !== optionToDelete)
+            }
+        });
+    }
 
     onMakeDecision() {
         const randNum = Math.floor(Math.random() * this.state.options.length);
         const selectedOption = this.state.options[randNum];
         alert(selectedOption);
-    };
+    }
 
     addOption(option) {
         if(!option) {
@@ -29,7 +39,7 @@ class FortuneApp extends React.Component {
             return 'This item alredy exists';
         }
        this.setState((prevState) => ({ options: prevState.options.concat(option) }));
-    };
+    }
 
     render() {
         return (
@@ -42,12 +52,13 @@ class FortuneApp extends React.Component {
                     onMakeDecision={this.onMakeDecision} />
                 <Options 
                     options={this.state.options} 
-                    onRemoveAll={this.onRemoveAll}/>
+                    onRemoveAll={this.onRemoveAll}
+                    onRemoveOption={this.onRemoveOption}/>
                 <AddOption 
                     addOption={this.addOption}/>
             </div>
         );
-    };
+    }
 }
 
 FortuneApp.defaultProps = {
@@ -81,9 +92,12 @@ const Options = (props) => {
                 <p>Options Component here</p>
                 <button onClick={props.onRemoveAll}>Remove All</button>
                 {
-                    props.options.map((option) => {
-                        return <Option key={option} option={option}/>
-                    })
+                    props.options.map((option) => (
+                             <Option 
+                                key={option} 
+                                option={option} 
+                                onRemoveOption={props.onRemoveOption} />
+                    ))
                 }
                 
             </div>
@@ -91,9 +105,18 @@ const Options = (props) => {
 };
 
 const Option = (props) => {
-        return (
-            <div>Option: {props.option}</div>
-        );
+    // this.onRemoveOption(e) {
+    //     const option = e.target.prevSibling()
+    // }
+
+    return (
+        <div>
+            {props.option}
+            <button onClick={(e) => {
+                props.onRemoveOption(props.option);
+            }}>Remove</button>
+        </div>
+    );
 };
 
 class AddOption extends React.Component {
@@ -103,7 +126,7 @@ class AddOption extends React.Component {
         this.state = {
             error: undefined
         }
-    };
+    }
 
     onAddOption(e) {
 
@@ -115,7 +138,7 @@ class AddOption extends React.Component {
         
         this.setState(() => ({ error }));
 
-    };
+    }
 
     render() {
         return (
@@ -127,7 +150,7 @@ class AddOption extends React.Component {
                 </form>
             </div>
         );
-    };
+    }
 }
 
-ReactDOM.render(<FortuneApp options={['The Valuty Towers', 'Cubin One']}/>, document.getElementById('app'));
+ReactDOM.render(<FortuneApp />, document.getElementById('app'));
