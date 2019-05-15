@@ -1,3 +1,6 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 //classbased vs stateless functional components
 
 class FortuneApp extends React.Component {
@@ -11,6 +14,32 @@ class FortuneApp extends React.Component {
             subtitle: 'See into your future',
             options: props.options
         };
+    }
+
+    componentDidMount() {
+
+        try {
+            const json = localStorage.getItem('options');
+            const options = JSON.parse(json);
+    
+            if(options) {
+                this.setState(() => ({options}));
+            }
+        } catch (e) {
+            //Do nothing at all
+        }
+
+    }
+
+    componentDidUpdate(prevProps, prevState) {
+        if(prevState.options.length !== this.state.options.length) {
+            const json = JSON.stringify(this.state.options);
+            localStorage.setItem('options', json);
+        }
+    }
+
+    componentWillUnmount() {
+        console.log('component will unmount');
     }
 
     onRemoveAll() {
@@ -29,7 +58,11 @@ class FortuneApp extends React.Component {
     onMakeDecision() {
         const randNum = Math.floor(Math.random() * this.state.options.length);
         const selectedOption = this.state.options[randNum];
-        alert(selectedOption);
+        if(selectedOption !== undefined) {
+            alert(selectedOption);
+        } else {
+            alert('Please add options first');
+        }
     }
 
     addOption(option) {
@@ -91,6 +124,7 @@ const Options = (props) => {
             <div>
                 <p>Options Component here</p>
                 <button onClick={props.onRemoveAll}>Remove All</button>
+                {props.options.length === 0 && <p>Please add an option to get started</p>}
                 {
                     props.options.map((option) => (
                              <Option 
@@ -105,10 +139,6 @@ const Options = (props) => {
 };
 
 const Option = (props) => {
-    // this.onRemoveOption(e) {
-    //     const option = e.target.prevSibling()
-    // }
-
     return (
         <div>
             {props.option}
@@ -133,10 +163,13 @@ class AddOption extends React.Component {
         e.preventDefault();
 
         const option = e.target.elements.option.value.trim();
-        e.target.elements.option.value = '';
-        const error = this.props.addOption(option);
+          const error = this.props.addOption(option);
         
         this.setState(() => ({ error }));
+
+        if(!error) {
+            e.target.elements.option.value = '';
+        }
 
     }
 
