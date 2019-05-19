@@ -16,6 +16,15 @@ module.exports = {
                 // query: {
                 //     presets: ['env', 'react']
                 // }
+            },
+            {
+                //both scss and css
+                test: /\.s?css$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'sass-loader'
+                ] //specify array of loaders
             }
         ]
     },
